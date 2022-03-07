@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>ILoveReading Sign in</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+
+<body>
+    <div class="container">
+        <a href="home.html"><img src="images/logo.png" width="150" height="150"></a>
+        <form>
+            <header>Welcome To ILoveReading</header>
+            <div class="input-field">
+                <input type="text" required name="username" id="username">
+                <label>Email or Username</label>
+            </div>
+            <div class="input-field">
+                <input class="pswrd" type="password" name="password" id="password" required>
+                <span class="show">SHOW</span>
+                <label>Password</label>
+            </div>
+            <div class="button">
+                <div class="inner"></div>
+                <button>LOGIN</button>
+            </div>
+        </form>
+        <div class="error"></div>
+        <div class="signup">
+            Not a member? <a href="signup.html">Sign Up</a>
+        </div>
+    </div>
+    <script>
+        var input = document.querySelector('.pswrd');
+        var show = document.querySelector('.show');
+        show.addEventListener('click', active);
+        function active() {
+            if (input.type === "password") {
+                input.type = "text";
+                show.style.color = "#CC00CC";
+                show.textContent = "HIDE";
+            } else {
+                input.type = "password";
+                show.textContent = "SHOW";
+                show.style.color = "#e2a8fe";
+            }
+        }
+        document.querySelector('.button').addEventListener('click', function(event) {
+            event.preventDefault();
+            let username = document.getElementById('username').value;
+            let password = document.getElementById('password').value;
+            fetch('http://localhost:3000/api/login', {
+                    method: 'POST',
+                    redirect: 'follow',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                }).then(response => {
+                    if(response.redirected) {
+                        window.location.href = response.url;
+                    }
+                    else {
+                        document.querySelector('.error').textContent = "Invalid Username or Password";
+                    }
+                })
+        })
+    </script>
+</body>
+
+</html>

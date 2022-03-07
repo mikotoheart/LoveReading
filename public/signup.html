@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="login.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <title>ILoveReading Sign Up</title>
+</head>
+<style>
+  body {
+    height: 135vh;
+  }
+
+  .login {
+    margin-top: 56px;
+    font-family: 'Noto Sans', sans-serif;
+  }
+
+  .login a {
+    color: #007FFF;
+    text-decoration: none;
+  }
+
+  .login a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<body>
+  <div class="container">
+    <a href="home.html"><img src="images/logo.png" width="150" height="150"></a>
+    <form action="">
+      <header>Sign up</header>
+      <div class="input-field"><input type="text" required id="firstname"><label>First Name</label></div>
+      <div class="input-field"><input type="text" required id="lastname"><label>Last Name</label></div>
+      <div class="input-field"><input type="text" required id="username"><label>Username</label></div>
+      <div class="input-field"><input type="text" required id="email"><label>E-mail</label></div>
+      <div class="input-field">
+        <input type="password" class="pswrd" id="password" required>
+        <span class="show">SHOW</span>
+        <label>Password</label>
+      </div>
+      <div class="button">
+        <div class="inner"></div>
+        <button>
+          SIGN UP
+        </button>
+      </div>
+      <div id="error"></div>
+    </form>
+    <div class="login">
+      Already a member? <a href="login.html">Login</a>
+    </div>
+  </div>
+  <script>
+    var input = document.querySelector('.pswrd');
+    var show = document.querySelector('.show');
+    show.addEventListener('click', active);
+    function active() {
+      if (input.type === "password") {
+        input.type = "text";
+        show.style.color = "#CC00CC";
+        show.textContent = "HIDE";
+      } else {
+        input.type = "password";
+        show.textContent = "SHOW";
+        show.style.color = "#e2a8fe";
+      }
+    }
+    function readCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+      }
+      return null;
+    }
+    document.querySelector('.button').addEventListener('click', function (event) {
+      event.preventDefault();
+      let firstname = document.querySelector('#firstname').value;
+      let lastname = document.querySelector('#lastname').value;
+      let username = document.querySelector('#username').value;
+      let email = document.querySelector('#email').value;
+      let password = document.querySelector('#password').value;
+      fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          firstname: firstname,
+          lastname: lastname,
+          username: username,
+          email: email,
+          password: password
+        })
+      }).then(function (response) {
+        console.log(response);
+        if (response.status == 200) {
+          window.location.href = "confirm.html";
+        } else {
+          document.querySelector('#error').innerHTML = "Username or email already exists";
+        }
+      }).catch(function (error) {
+        let errorMsg = document.querySelector('#error');
+        errorMsg.textContent = error.message;
+      });
+    })
+    
+  </script>
+</body>
+
+</html>
